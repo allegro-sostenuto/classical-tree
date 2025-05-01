@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Classical Music Tree</title>
+  <style>
+    /* Reset list styling */
+    ul { list-style: none; margin: 0; padding: 0; }
+
+    /* Hide nested lists by default */
+    .nested {
+      display: none;
+    }
+
+    /* Show nested lists when active */
+    .active {
+      display: block;
+    }
+
+    /* Caret arrow styling */
+    .caret {
+      cursor: pointer;
+      user-select: none;
+    }
+    .caret::before {
+      content: "\25B6";             /* right-pointing triangle */
+      display: inline-block; 
+      margin-right: 6px;
+      transform: rotate(0deg);
+      transition: transform 0.2s;
+    }
+    .caret-down::before {
+      transform: rotate(90deg);     /* down-pointing when expanded */
+    }
+
+    /* Indent child list items */
+    .nested li {
+      margin-left: 1.2em;
+    }
+  </style>
+</head>
+<body>
+  <label for="sortField">Sort by:
+    <select id="sortField">
+      <option value="composer">Composer</option>
+      <option value="year">Year</option>
+      <option value="genre">Genre</option>
+      <option value="instrumentation">Instrumentation</option>
+      <option value="category">Category</option>
+      <option value="name">Name</option>
+    </select>
+  </label>
+  <button id="sortBtn" type="button">Reorder Tree</button>
+
+  <ul id="musicTree"></ul>
+
+  <script>
+    // Sample data - replace or extend with your full database
+    const compositions = [
+      { name: "Symphony No.5", composer: "Beethoven", year: 1808, genre: "Symphony", category: "Orchestral", instrumentation: "Full Orchestra" },
+      { name: "Violin Concerto", composer: "Brahms", year: 1878, genre: "Concerto", category: "Orchestral", instrumentation: "Violin & Orchestra" },
+      { name: "Nocturne Op.9 No.2", composer: "Chopin", year: 1832, genre: "Nocturne", category: "Solo", instrumentation: "Piano" },
+      // …your other entries…
+    ];
+
+    // Build a tree grouping by `field` and recursing through the next priorities
+    function buildTree(arr, field) {
+      // Unique, sorted group keys
+      const groups = [...new Set(arr.map(item => item[field] || "Unknown"))].sort();
+      const ul = document.createElement("ul");
+      groups.forEach(group => {
+        const li = document.createElement("li");
+        const label = document.createElement("span");
+        label.textContent = group;
+        label.classList.add("caret");
+        li.appendChild(label);
+
+        // Items in this group
+        const items = arr.filter(item => (item[field] || "Unknown") === group);
+        if (items.length > 0) {
+          const nextFields = ["composer","year","genre","instrumentation","category","name"];
+          const nextIndex = (nextFields.indexOf(field) + 1) % nextFields.length;
+          const nextField = nextFields[nextIndex];
+
+          const childUl = document.createElement("ul");
+          childUl.classList.add("nested");
+
+          if (field === "name") {
+            // Leaf level: list composition entries
+            items.forEach(item => {
+              const leafLi = document.createElement("li");
+              leafLi.textContent = `${item.name} (${item.year}, ${item.genre})`;
+              childUl.appendChild(leafLi);
+            });
+          } else {
+            // Recurse deeper
+            const subtree = buildTree(items, nextField);
+            subtree.classList.add("nested");
+            li.appendChild(subtree);
+          }
+
+          li.appendChild(childUl);
+        }
+
+        ul.appendChild(li);
+      });
+      return ul;
+    }
+
+    // Render the entire tree based on selected sort field
+    function renderTree() {
+      const field = document.getElementById("sortField").value;
+
+      // Sort the flat array by chosen field, then by name
+      compositions.sort((a, b) => {
+        const va = a[field] || "", vb = b[field] || "";
+        if (va < vb) return -1;
+        if (va > vb) return 1;
+        return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
+      });
+
+      const container = document.getElementById("musicTree");
+      container.innerHTML = "";
+      container.appendChild(buildTree(compositions, field));
+
+      // Wire up expand/collapse
+      document.querySelectorAll(".caret").forEach(caret => {
+        caret.addEventListener("click", () => {
+          const nested = caret.parentElement.querySelector(".nested");
+          nested.classList.toggle("active");
+          caret.classList.toggle("caret-down");
+        });
+      });
+    }
+
+    // Initial render on page load
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("sortBtn").addEventListener("click", renderTree);
+      renderTree();
+    });
+  </script>
+</body>
+</html>
