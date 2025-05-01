@@ -128,6 +128,8 @@ function getPriorities() {
     .map(li => li.dataset.field);
 }
 
+
+
 // Recursively build the tree using priority order
 function buildTree(arr, priorities, depth = 0) {
   const ul = document.createElement('ul');
@@ -199,3 +201,35 @@ function renderTree(priorities) {
     });
   });
 }
+
+// Function to expand all nested tree items recursively
+function expandAll() {
+  const caretIcons = document.querySelectorAll('.caret');
+  caretIcons.forEach(caret => {
+    if (!caret.classList.contains('caret-down')) { // If not expanded
+      caret.click(); // Simulate a click to expand the node
+    }
+  });
+}
+
+// Function to collapse all nested tree items recursively
+function collapseAll() {
+  const caretIcons = document.querySelectorAll('.caret');
+  caretIcons.forEach(caret => {
+    if (caret.classList.contains('caret-down')) { // If expanded
+      caret.click(); // Simulate a click to collapse the node
+    }
+  });
+}
+
+// Toggle between expand all and collapse all based on current state
+document.getElementById('expandCollapseAll').addEventListener('click', function () {
+  const allExpanded = document.querySelectorAll('.caret-down').length === document.querySelectorAll('.caret').length;
+  if (allExpanded) {
+    collapseAll();
+    this.textContent = "Expand All";
+  } else {
+    expandAll();
+    this.textContent = "Collapse All";
+  }
+});
