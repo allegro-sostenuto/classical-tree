@@ -1,0 +1,67 @@
+[
+    {
+      "name": "Symphony No. 5",
+      "composer": "Ludwig van Beethoven",
+      "year": 1808,
+      "genre": "Symphony",
+      "category": "Orchestral",
+      "instrumentation": "Full Orchestra"
+    },
+    {
+      "name": "Violin Concerto in D major, Op. 35",
+      "composer": "Pyotr Ilyich Tchaikovsky",
+      "year": 1878,
+      "genre": "Concerto",
+      "category": "Orchestral",
+      "instrumentation": "Violin & Orchestra"
+    },
+    {
+      "name": "Nocturne in E-flat major, Op. 9 No. 2",
+      "composer": "Frédéric Chopin",
+      "year": 1832,
+      "genre": "Nocturne",
+      "category": "Solo",
+      "instrumentation": "Piano"
+    },
+    {
+      "name": "The Four Seasons: Spring",
+      "composer": "Antonio Vivaldi",
+      "year": 1725,
+      "genre": "Concerto",
+      "category": "Chamber",
+      "instrumentation": "Violin & Strings"
+    },
+    {
+      "name": "String Quartet No. 14 in D minor, “Death and the Maiden”",
+      "composer": "Franz Schubert",
+      "year": 1824,
+      "genre": "String Quartet",
+      "category": "Chamber",
+      "instrumentation": "2 Violins, Viola, Cello"
+    },
+    {
+      "name": "Boléro",
+      "composer": "Maurice Ravel",
+      "year": 1928,
+      "genre": "Orchestral Showpiece",
+      "category": "Orchestral",
+      "instrumentation": "Full Orchestra"
+    },
+    {
+      "name": "Canon in D",
+      "composer": "Johann Pachelbel",
+      "year": 1680,
+      "genre": "Canon and Gigue",
+      "category": "Chamber",
+      "instrumentation": "Strings"
+    },
+    {
+      "name": "Rite of Spring",
+      "composer": "Igor Stravinsky",
+      "year": 1913,
+      "genre": "Ballet",
+      "category": "Orchestral",
+      "instrumentation": "Large Orchestra"
+    }
+  ]
+  
