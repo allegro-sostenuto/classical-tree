@@ -1,5 +1,3 @@
-/* styles.css */
-
 /* Reset and base list styling */
 ul {
     list-style: none;
@@ -8,76 +6,8 @@ ul {
     font-family: sans-serif;
   }
   
-  /* Tree nodes hidden by default */
-  .nested {
-    display: none;
-  }
-  
-  /* Shown when active */
-  .active {
-    display: block;
-  }
-  
-  /* Caret styling */
-  .caret {
-    cursor: pointer;
-    user-select: none;
-    display: inline-block;
-    margin: 4px 0;
-    font-weight: bold;
-  }
-  
-  /* Arrow before the caret text */
-  .caret::before {
-    content: "\25B6";        /* ▶ */
-    display: inline-block;
-    margin-right: 6px;
-    transform: rotate(0deg);
-    transition: transform 0.2s ease;
-  }
-  
-  /* Rotated arrow when expanded */
-  .caret-down::before {
-    transform: rotate(90deg);
-  }
-  
-  /* Indentation for nested items */
-  .nested li {
-    margin-left: 1.2em;
-    line-height: 1.4;
-  }
-  
-  /* Optional: hover effect on caret labels */
-  .caret:hover {
-    color: #007ACC;
-  }
-  
-  /* Style for the sort controls */
-  #sortField, #sortBtn {
-    margin: 0.5em 0.2em;
-    padding: 0.3em 0.6em;
-    font-size: 1em;
-  }
-  
-  /* Button styling */
-  #sortBtn {
-    border: 1px solid #007ACC;
-    background-color: #E0F3FF;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  #sortBtn:hover {
-    background-color: #C9EFFF;
-  }
-  
-  /* Utility: subtle separator between top controls and tree */
-  #musicTree {
-    border-top: 1px solid #DDD;
-    padding-top: 0.8em;
-  }
-  
-  /* Horizontal draggable tabs */
-#priorityTabs {
+  /* Style for draggable tabs (horizontal) */
+  #priorityTabs {
     display: flex;
     flex-direction: row;
     gap: 8px;
@@ -93,18 +23,22 @@ ul {
     padding: 6px 12px;
     background-color: #e0e0e0;
     border-radius: 8px;
-    cursor: move;
+    cursor: default;
     user-select: none;
-    box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
     transition: background-color 0.2s ease;
+    margin: 0;
   }
   
-  /* Visual cue for drag handle */
+  /* Visual cue and drag behavior for drag handle */
   #priorityTabs li .handle {
     margin-right: 6px;
     font-weight: bold;
     cursor: grab;
     color: #555;
+    user-select: none;
+    pointer-events: auto;
+    touch-action: none;
   }
   
   /* Hover and active feedback */
@@ -116,7 +50,7 @@ ul {
     cursor: grabbing;
   }
   
-  /* Button spacing */
+  /* Button for applying new priorities */
   #applyTabs {
     margin-top: 0.5em;
     padding: 0.4em 0.8em;
@@ -129,5 +63,41 @@ ul {
   
   #applyTabs:hover {
     background-color: #E6E6FF;
+  }
+  
+  /* Music tree styling */
+  #musicTree {
+    border-top: 1px solid #DDD;
+    padding-top: 0.8em;
+  }
+  
+  /* Caret styling for collapsible nodes */
+  .caret {
+    cursor: pointer;
+    user-select: none;
+    display: inline-block;
+    margin: 4px 0;
+    font-weight: bold;
+  }
+  
+  .caret-down::before {
+    transform: rotate(90deg);
+  }
+  
+  .caret::before {
+    content: "\25B6"; /* ▶ */
+    display: inline-block;
+    margin-right: 6px;
+    transition: transform 0.2s ease;
+  }
+  
+  /* Nested items for tree nodes */
+  .nested li {
+    margin-left: 1.2em;
+    line-height: 1.4;
+  }
+  
+  .caret:hover {
+    color: #007ACC;
   }
   
