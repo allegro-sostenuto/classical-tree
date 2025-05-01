@@ -24,11 +24,19 @@ ul {
   background-color: #e0e0e0;
   border-radius: 8px;
   cursor: default;
+  /* Make the entire tab draggable */
   user-select: none;
   box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
   transition: background-color 0.2s ease;
   margin: 0;
 }
+
+/* Disable dragging behavior for expand button */
+#priorityTabs li .expand-btn {
+  pointer-events: none;
+  /* Prevent the expand button from triggering drag */
+}
+
 
 /* Visual cue and drag behavior for drag handle */
 #priorityTabs li .handle {
@@ -39,7 +47,15 @@ ul {
   user-select: none;
   pointer-events: auto;
   touch-action: none;
+  padding: 8px 16px;
+  /* Increase padding for a larger handle */
+  background-color: #d0d0d0;
+  /* Optional: Add background color to make it stand out more */
+  border-radius: 5px;
+  /* Optional: Rounded corners for the handle */
 }
+
+
 
 /* Hover and active feedback */
 #priorityTabs li:hover {
@@ -116,7 +132,6 @@ ul {
 /* Button for expanding options next to each tab */
 #priorityTabs li .expand-btn {
   margin-left: 8px;
-  /* Space between the text and button */
   background: none;
   border: none;
   font-size: 16px;
@@ -125,8 +140,9 @@ ul {
   padding: 0;
 }
 
+/* Disable hover color change on expand button */
 #priorityTabs li .expand-btn:hover {
-  color: #007ACC;
+  color: #555;
 }
 
 /* Style for the dropdown container */
@@ -137,7 +153,6 @@ ul {
   border-radius: 4px;
   padding: 8px;
   display: none;
-  /* Hidden by default */
   z-index: 10;
 }
 
@@ -156,5 +171,4 @@ ul {
 /* Active dropdown when expanded */
 .dropdown-container.active {
   display: block;
-  /* Show dropdown */
 }
