@@ -2,28 +2,28 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Classical Music Tree</title>
-  <!-- Link external stylesheet in head -->
+  <title>Classical Music Tree — Custom Priority Tabs</title>
+  <!-- Link external stylesheet -->
   <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body>
-  <!-- Controls -->
-  <label for="sortField">Sort by:
-    <select id="sortField">
-      <option value="composer">Composer</option>
-      <option value="year">Year</option>
-      <option value="genre">Genre</option>
-      <option value="instrumentation">Instrumentation</option>
-      <option value="category">Category</option>
-      <option value="name">Name</option>
-    </select>
-  </label>
-  <button id="sortBtn" type="button">Reorder Tree</button>
+  <!-- Draggable priority tabs -->
+  <ul id="priorityTabs" class="tab-bar">
+    <li draggable="true" data-field="composer"><span class="handle">≡</span>Composer</li>
+    <li draggable="true" data-field="year"><span class="handle">≡</span>Year</li>
+    <li draggable="true" data-field="genre"><span class="handle">≡</span>Genre</li>
+    <li draggable="true" data-field="instrumentation"><span class="handle">≡</span>Instrumentation</li>
+    <li draggable="true" data-field="category"><span class="handle">≡</span>Category</li>
+    <li draggable="true" data-field="name"><span class="handle">≡</span>Name</li>
+  </ul>
+  <button id="applyTabs" type="button">Apply Priority</button>
 
   <!-- Tree container -->
   <ul id="musicTree"></ul>
 
-  <!-- Load JS at end of body for non-blocking rendering -->
+  <!-- Include SortableJS from CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
+  <!-- Main tree logic -->
   <script src="tree.js"></script>
 </body>
 </html>
