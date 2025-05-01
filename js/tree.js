@@ -17,25 +17,35 @@ fetch('data.json')
 // Setup draggable priority tabs and Apply button
 function initializeTabs() {
   const tabs = document.getElementById('priorityTabs');
+  tabs.innerHTML = ''; // Clear existing static tabs
+
+  const fields = Object.keys(compositions[0]).filter(f => f !== 'name');
+
+  fields.forEach(field => {
+    const li = document.createElement('li');
+    li.dataset.field = field;
+
+    const handle = document.createElement('span');
+    handle.className = 'handle';
+    handle.textContent = '≡';
+    li.appendChild(handle);
+
+    li.appendChild(document.createTextNode(field.charAt(0).toUpperCase() + field.slice(1)));
+
+    const button = document.createElement('button');
+    button.textContent = "▼";
+    button.classList.add('expand-btn');
+    button.addEventListener('click', () => {
+      console.log(`Expand dropdown for ${field}`);
+    });
+    li.appendChild(button);
+
+    tabs.appendChild(li);
+  });
+
   Sortable.create(tabs, {
     animation: 150,
     handle: '.handle'
-  });
-
-  // Add the button to each tab
-  const tabItems = tabs.querySelectorAll('li');
-  tabItems.forEach(item => {
-    // Create the button
-    const button = document.createElement('button');
-    button.textContent = "▼";  // Simple down-arrow button
-    button.classList.add('expand-btn');  // Add a class for styling
-    button.addEventListener('click', () => {
-      // Placeholder action for now: Expand dropdown when clicked
-      console.log(`Expand dropdown for ${item.dataset.field}`);
-    });
-
-    // Append the button to the list item (right of the text)
-    item.appendChild(button);
   });
 
   document.getElementById('applyTabs')
@@ -43,7 +53,6 @@ function initializeTabs() {
       renderTree(getPriorities());
     });
 }
-
 
 // Generate the dropdowns and checkboxes dynamically based on composition fields
 function generateDropdownFilters() {
@@ -121,11 +130,19 @@ function getPriorities() {
 
 // Recursively build the tree using priority order
 function buildTree(arr, priorities, depth = 0) {
-  if (depth >= priorities.length) return document.createElement('ul');
+  const ul = document.createElement('ul');
+
+  if (depth >= priorities.length) {
+    arr.forEach(item => {
+      const li = document.createElement('li');
+      li.textContent = item.name;  // Show the name at the end
+      ul.appendChild(li);
+    });
+    return ul;
+  }
 
   const field = priorities[depth];
   const groups = [...new Set(arr.map(i => i[field] || 'Unknown'))].sort();
-  const ul = document.createElement('ul');
 
   groups.forEach(group => {
     if (!selectedFilters[field] || selectedFilters[field].includes(group)) {
