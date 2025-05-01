@@ -112,3 +112,49 @@ ul {
 .caret:hover {
   color: #007ACC;
 }
+
+/* Button for expanding options next to each tab */
+#priorityTabs li .expand-btn {
+  margin-left: 8px;
+  /* Space between the text and button */
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: #555;
+  padding: 0;
+}
+
+#priorityTabs li .expand-btn:hover {
+  color: #007ACC;
+}
+
+/* Style for the dropdown container */
+.dropdown-container {
+  position: absolute;
+  background-color: #fff;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  padding: 8px;
+  display: none;
+  /* Hidden by default */
+  z-index: 10;
+}
+
+/* Style for the checkboxes inside the dropdown */
+.dropdown-container label {
+  display: block;
+  margin: 4px 0;
+  font-size: 14px;
+}
+
+/* Style for the checkboxes */
+.dropdown-container input[type="checkbox"] {
+  margin-right: 6px;
+}
+
+/* Active dropdown when expanded */
+.dropdown-container.active {
+  display: block;
+  /* Show dropdown */
+}

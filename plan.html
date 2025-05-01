@@ -10,10 +10,9 @@
 
 <body>
 
-
-
   <h1>Classical Music Tree</h1>
 
+  <!-- Priority Tabs for sorting -->
   <ul id="priorityTabs">
     <li data-field="composer"><span class="handle">≡</span>Composer</li>
     <li data-field="year"><span class="handle">≡</span>Year</li>
@@ -23,10 +22,16 @@
 
   <button id="applyTabs">Apply Priority</button>
 
+  <!-- Dropdown Filters Container for categories like Genre, Instrumentation -->
+  <div id="filterContainer"></div>
+
+  <!-- Music Tree will be rendered here -->
   <ul id="musicTree"></ul>
 
+  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
   <script src="js/tree.js" defer></script>
+
 </body>
 
 </html>

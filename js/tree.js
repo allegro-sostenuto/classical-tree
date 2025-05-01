@@ -1,4 +1,5 @@
 let compositions = [];
+let selectedFilters = {};
 
 // Load compositions data
 fetch('data.json')
@@ -21,10 +22,95 @@ function initializeTabs() {
     handle: '.handle'
   });
 
+  // Add the button to each tab
+  const tabItems = tabs.querySelectorAll('li');
+  tabItems.forEach(item => {
+    // Create the button
+    const button = document.createElement('button');
+    button.textContent = "▼";  // Simple down-arrow button
+    button.classList.add('expand-btn');  // Add a class for styling
+    button.addEventListener('click', () => {
+      // Placeholder action for now: Expand dropdown when clicked
+      console.log(`Expand dropdown for ${item.dataset.field}`);
+    });
+
+    // Append the button to the list item (right of the text)
+    item.appendChild(button);
+  });
+
   document.getElementById('applyTabs')
     .addEventListener('click', () => {
       renderTree(getPriorities());
     });
+}
+
+
+// Generate the dropdowns and checkboxes dynamically based on composition fields
+function generateDropdownFilters() {
+  const fields = Object.keys(compositions[0]); // Get all fields dynamically
+
+  fields.forEach(field => {
+    const fieldValues = [...new Set(compositions.map(comp => comp[field] || 'Unknown'))];
+
+    // Create a container for the field
+    const fieldContainer = document.createElement('div');
+    fieldContainer.classList.add('filter-container');
+
+    // Create a label for the field
+    const label = document.createElement('label');
+    label.textContent = field.charAt(0).toUpperCase() + field.slice(1);
+    fieldContainer.appendChild(label);
+
+    // Create a dropdown for the field
+    const dropdownButton = document.createElement('button');
+    dropdownButton.classList.add('dropdown-btn');
+    dropdownButton.textContent = '▼';
+    fieldContainer.appendChild(dropdownButton);
+
+    const dropdownContent = document.createElement('div');
+    dropdownContent.classList.add('dropdown-content');
+    fieldContainer.appendChild(dropdownContent);
+
+    // Create checkboxes for each unique field value
+    fieldValues.forEach(value => {
+      const checkboxWrapper = document.createElement('div');
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.value = value;
+      checkbox.id = `${field}-${value}`;
+      checkbox.checked = selectedFilters[field] ? selectedFilters[field].includes(value) : true;
+      const checkboxLabel = document.createElement('label');
+      checkboxLabel.setAttribute('for', `${field}-${value}`);
+      checkboxLabel.textContent = value;
+
+      checkboxWrapper.appendChild(checkbox);
+      checkboxWrapper.appendChild(checkboxLabel);
+      dropdownContent.appendChild(checkboxWrapper);
+
+      // Add event listener to update selectedFilters when checkbox is toggled
+      checkbox.addEventListener('change', () => {
+        updateSelectedFilters(field, value, checkbox.checked);
+        renderTree(getPriorities());
+      });
+    });
+
+    document.getElementById('filterContainer').appendChild(fieldContainer);
+
+    // Toggle dropdown visibility
+    dropdownButton.addEventListener('click', () => {
+      dropdownContent.classList.toggle('show');
+    });
+  });
+}
+
+// Update the selected filter values
+function updateSelectedFilters(field, value, isChecked) {
+  if (isChecked) {
+    if (!selectedFilters[field]) selectedFilters[field] = [];
+    selectedFilters[field].push(value);
+  } else {
+    selectedFilters[field] = selectedFilters[field].filter(v => v !== value);
+  }
 }
 
 // Read the current tab order into an array of field names
@@ -42,27 +128,28 @@ function buildTree(arr, priorities, depth = 0) {
   const ul = document.createElement('ul');
 
   groups.forEach(group => {
-    const li = document.createElement('li');
+    if (!selectedFilters[field] || selectedFilters[field].includes(group)) {
+      const li = document.createElement('li');
+      const label = document.createElement('span');
+      label.textContent = group;
+      label.classList.add('caret');
+      li.appendChild(label);
 
-    const label = document.createElement('span');
-    label.textContent = group;
-    label.classList.add('caret');
-    li.appendChild(label);
+      const items = arr.filter(i => (i[field] || 'Unknown') === group);
+      if (items.length) {
+        const childUl = buildTree(items, priorities, depth + 1);
+        childUl.classList.add('nested');
+        li.appendChild(childUl);
+      }
 
-    const items = arr.filter(i => (i[field] || 'Unknown') === group);
-    if (items.length) {
-      const childUl = buildTree(items, priorities, depth + 1);
-      childUl.classList.add('nested');
-      li.appendChild(childUl);
+      ul.appendChild(li);
     }
-
-    ul.appendChild(li);
   });
 
   return ul;
 }
 
-// Render the tree with current priorities
+// Render the tree with current priorities and filters
 function renderTree(priorities) {
   compositions.sort((a, b) => {
     for (let field of priorities) {
@@ -78,12 +165,19 @@ function renderTree(priorities) {
   container.innerHTML = '';
   container.appendChild(buildTree(compositions, priorities));
 
+  // Add event listeners for the caret (expand/collapse)
   document.querySelectorAll('.caret').forEach(caret => {
     caret.addEventListener('click', () => {
       const nested = caret.parentElement.querySelector('.nested');
       if (nested) {
         nested.classList.toggle('active');
         caret.classList.toggle('caret-down');
+      }
+
+      // Toggle the checkbox container when a genre is clicked
+      const checkboxContainer = caret.parentElement.querySelector('.checkbox-container');
+      if (checkboxContainer) {
+        checkboxContainer.classList.toggle('active');
       }
     });
   });
