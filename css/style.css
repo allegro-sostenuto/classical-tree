@@ -133,14 +133,14 @@ ul {
 }
 
 .caret::before {
-  content: "\25B6";
+  content: "\002B";
   display: inline-block;
   margin-right: 6px;
   transition: transform 0.2s ease;
 }
 
 .caret-down::before {
-  transform: rotate(90deg);
+  transform: rotate(45deg);
 }
 
 .caret:hover {

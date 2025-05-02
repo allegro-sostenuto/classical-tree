@@ -142,5 +142,157 @@
     "genre": "20th-century",
     "category": "Rhapsody",
     "instrumentation": "Piano and Orchestra"
+  },
+  {
+    "name": "The Well-Tempered Clavier, Book I",
+    "composer": "Johann Sebastian Bach",
+    "year": 1722,
+    "genre": "Baroque",
+    "category": "Keyboard Collection",
+    "instrumentation": "Harpsichord"
+  },
+  {
+    "name": "The Well-Tempered Clavier, Book II",
+    "composer": "Johann Sebastian Bach",
+    "year": 1742,
+    "genre": "Baroque",
+    "category": "Keyboard Collection",
+    "instrumentation": "Harpsichord"
+  },
+  {
+    "name": "Goldberg Variations, BWV 988",
+    "composer": "Johann Sebastian Bach",
+    "year": 1741,
+    "genre": "Baroque",
+    "category": "Variations",
+    "instrumentation": "Harpsichord"
+  },
+  {
+    "name": "English Suites, BWV 806–811",
+    "composer": "Johann Sebastian Bach",
+    "year": 1725,
+    "genre": "Baroque",
+    "category": "Suite",
+    "instrumentation": "Harpsichord"
+  },
+  {
+    "name": "French Suites, BWV 812–817",
+    "composer": "Johann Sebastian Bach",
+    "year": 1722,
+    "genre": "Baroque",
+    "category": "Suite",
+    "instrumentation": "Harpsichord"
+  },
+  {
+    "name": "Partitas, BWV 825–830",
+    "composer": "Johann Sebastian Bach",
+    "year": 1726,
+    "genre": "Baroque",
+    "category": "Suite",
+    "instrumentation": "Harpsichord"
+  },
+  {
+    "name": "Inventions and Sinfonias, BWV 772–801",
+    "composer": "Johann Sebastian Bach",
+    "year": 1723,
+    "genre": "Baroque",
+    "category": "Keyboard Collection",
+    "instrumentation": "Harpsichord"
+  },
+  {
+    "name": "Italian Concerto, BWV 971",
+    "composer": "Johann Sebastian Bach",
+    "year": 1735,
+    "genre": "Baroque",
+    "category": "Concerto",
+    "instrumentation": "Harpsichord"
+  },
+  {
+    "name": "Chromatic Fantasia and Fugue in D minor, BWV 903",
+    "composer": "Johann Sebastian Bach",
+    "year": 1720,
+    "genre": "Baroque",
+    "category": "Fantasia and Fugue",
+    "instrumentation": "Harpsichord"
+  },
+  {
+    "name": "Toccatas, BWV 910–916",
+    "composer": "Johann Sebastian Bach",
+    "year": 1714,
+    "genre": "Baroque",
+    "category": "Toccata",
+    "instrumentation": "Harpsichord"
+  },
+  {
+    "name": "Fantasia in C minor, BWV 918",
+    "composer": "Johann Sebastian Bach",
+    "year": 1740,
+    "genre": "Baroque",
+    "category": "Fantasia",
+    "instrumentation": "Harpsichord"
+  },
+  {
+    "name": "Fantasia and Fugue in A minor, BWV 944",
+    "composer": "Johann Sebastian Bach",
+    "year": 1822,
+    "genre": "Baroque",
+    "category": "Fantasia and Fugue",
+    "instrumentation": "Harpsichord"
+  },
+  {
+    "name": "Fantasia and Fugue in C minor, BWV 906",
+    "composer": "Johann Sebastian Bach",
+    "year": 1738,
+    "genre": "Baroque",
+    "category": "Fantasia and Fugue",
+    "instrumentation": "Harpsichord"
+  },
+  {
+    "name": "Fantasia and Fugue in G minor, BWV 542",
+    "composer": "Johann Sebastian Bach",
+    "year": 1720,
+    "genre": "Baroque",
+    "category": "Fantasia and Fugue",
+    "instrumentation": "Organ"
+  },
+  {
+    "name": "Arrival of the Queen of Sheba",
+    "composer": "George Frideric Handel",
+    "year": 1749,
+    "genre": "Baroque",
+    "category": "Orchestral Sinfonia",
+    "instrumentation": "Two Oboes and Strings"
+  },
+  {
+    "name": "Fugue in E Minor, HWV 429",
+    "composer": "George Frideric Handel",
+    "year": 1720,
+    "genre": "Baroque",
+    "category": "Keyboard Suite",
+    "instrumentation": "Harpsichord"
+  },
+  {
+    "name": "Sarabande from Suite No. 4 in D Minor, HWV 437",
+    "composer": "George Frideric Handel",
+    "year": 1733,
+    "genre": "Baroque",
+    "category": "Keyboard Suite",
+    "instrumentation": "Harpsichord"
+  },
+  {
+    "name": "Keyboard Suite No. 1 in B-flat Major, HWV 434",
+    "composer": "George Frideric Handel",
+    "year": 1733,
+    "genre": "Baroque",
+    "category": "Keyboard Suite",
+    "instrumentation": "Harpsichord"
+  },
+  {
+    "name": "Zadok the Priest",
+    "composer": "George Frideric Handel",
+    "year": 1727,
+    "genre": "Baroque",
+    "category": "Coronation Anthem",
+    "instrumentation": "Chorus and Orchestra"
   }
 ]
