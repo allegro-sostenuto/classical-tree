@@ -15,7 +15,7 @@ This project is a web-based application designed to display and organize a colle
 The project is organized into the following directories and files:
 
 - **HTML**:
-  - `plan.html`: The main HTML file that serves as the entry point for the application.
+  - `catalogue.html`: The main HTML file that serves as the entry point for the application.
 - **CSS**:
   - `css/style.css`: Contains styles for the tree structure, draggable tabs, dropdown filters, and other UI elements.
 - **JavaScript**:
@@ -36,7 +36,7 @@ The project is organized into the following directories and files:
 ## Installation and Usage
 
 1. Clone the repository to your local machine.
-2. Open `plan.html` in a web browser.
+2. Open `catalogue.html` in a web browser.
 3. Interact with the tree structure using the provided UI controls.
 
 ## Dependencies
