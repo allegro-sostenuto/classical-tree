@@ -14,7 +14,7 @@ fetch('data.json')
   })
   .catch(err => console.error('Error loading compositions:', err));
 
-// Setup draggable priority tabs and Apply button
+// Initialize draggable priority tabs
 function initializeTabs() {
   const tabs = document.getElementById('priorityTabs');
   tabs.innerHTML = ''; // Clear existing static tabs
@@ -22,25 +22,7 @@ function initializeTabs() {
   const fields = Object.keys(compositions[0]).filter(f => f !== 'name');
 
   fields.forEach(field => {
-    const li = document.createElement('li');
-    li.dataset.field = field;
-
-    const handle = document.createElement('span');
-    handle.className = 'handle';
-    handle.textContent = '≡';
-    li.appendChild(handle);
-
-    li.appendChild(document.createTextNode(field.charAt(0).toUpperCase() + field.slice(1)));
-
-    const button = document.createElement('button');
-    button.textContent = "▼";
-    button.classList.add('expand-btn');
-    button.addEventListener('click', () => {
-      console.log(`Expand dropdown for ${field}`);
-    });
-    li.appendChild(button);
-
-    tabs.appendChild(li);
+    tabs.appendChild(createTab(field));
   });
 
   Sortable.create(tabs, {
@@ -49,70 +31,144 @@ function initializeTabs() {
   });
 
   document.getElementById('applyTabs')
-    .addEventListener('click', () => {
-      renderTree(getPriorities());
-    });
+    .addEventListener('click', () => renderTree(getPriorities()));
 }
 
-// Generate the dropdowns and checkboxes dynamically based on composition fields
+// Create a tab with draggable handle and expand button
+function createTab(field) {
+  const li = document.createElement('li');
+  li.dataset.field = field;
+
+  const handle = createHandle();
+  const label = createLabel(field);
+  const button = createExpandButton(field);
+
+  li.appendChild(handle);
+  li.appendChild(label);
+  li.appendChild(button);
+
+  return li;
+}
+
+// Create draggable handle for a tab
+function createHandle() {
+  const handle = document.createElement('span');
+  handle.className = 'handle';
+  handle.textContent = '≡';
+  return handle;
+}
+
+// Create the label for each field
+function createLabel(field) {
+  const label = document.createElement('span');
+  label.textContent = field.charAt(0).toUpperCase() + field.slice(1);
+  return label;
+}
+
+// Create the expand button for each tab
+function createExpandButton(field) {
+  const button = document.createElement('button');
+  button.textContent = "▼";
+  button.classList.add('expand-btn');
+  button.addEventListener('click', () => console.log(`Expand dropdown for ${field}`));
+  return button;
+}
+
+// Generate the dropdown filters dynamically
 function generateDropdownFilters() {
   const fields = Object.keys(compositions[0]); // Get all fields dynamically
-
-  fields.forEach(field => {
-    const fieldValues = [...new Set(compositions.map(comp => comp[field] || 'Unknown'))];
-
-    // Create a container for the field
-    const fieldContainer = document.createElement('div');
-    fieldContainer.classList.add('filter-container');
-
-    // Create a label for the field
-    const label = document.createElement('label');
-    label.textContent = field.charAt(0).toUpperCase() + field.slice(1);
-    fieldContainer.appendChild(label);
-
-    // Create a dropdown for the field
-    const dropdownButton = document.createElement('button');
-    dropdownButton.classList.add('dropdown-btn');
-    dropdownButton.textContent = '▼';
-    fieldContainer.appendChild(dropdownButton);
-
-    const dropdownContent = document.createElement('div');
-    dropdownContent.classList.add('dropdown-content');
-    fieldContainer.appendChild(dropdownContent);
-
-    // Create checkboxes for each unique field value
-    fieldValues.forEach(value => {
-      const checkboxWrapper = document.createElement('div');
-      const checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      checkbox.value = value;
-      checkbox.id = `${field}-${value}`;
-      checkbox.checked = selectedFilters[field] ? selectedFilters[field].includes(value) : true;
-      const checkboxLabel = document.createElement('label');
-      checkboxLabel.setAttribute('for', `${field}-${value}`);
-      checkboxLabel.textContent = value;
-
-      checkboxWrapper.appendChild(checkbox);
-      checkboxWrapper.appendChild(checkboxLabel);
-      dropdownContent.appendChild(checkboxWrapper);
-
-      // Add event listener to update selectedFilters when checkbox is toggled
-      checkbox.addEventListener('change', () => {
-        updateSelectedFilters(field, value, checkbox.checked);
-        renderTree(getPriorities());
-      });
-    });
-
-    document.getElementById('filterContainer').appendChild(fieldContainer);
-
-    // Toggle dropdown visibility
-    dropdownButton.addEventListener('click', () => {
-      dropdownContent.classList.toggle('show');
-    });
-  });
+  fields.forEach(field => createFieldDropdown(field));
 }
 
-// Update the selected filter values
+// Create a dropdown filter for each field
+function createFieldDropdown(field) {
+  const fieldValues = getFieldValues(field);
+
+  const fieldContainer = document.createElement('div');
+  fieldContainer.classList.add('filter-container');
+
+  const label = createFilterLabel(field);
+  const dropdownButton = createDropdownButton();
+  const dropdownContent = createDropdownContent(field, fieldValues);
+
+  fieldContainer.appendChild(label);
+  fieldContainer.appendChild(dropdownButton);
+  fieldContainer.appendChild(dropdownContent);
+
+  document.getElementById('filterContainer').appendChild(fieldContainer);
+
+  dropdownButton.addEventListener('click', () => dropdownContent.classList.toggle('show'));
+}
+
+// Get unique field values for dropdown
+function getFieldValues(field) {
+  return [...new Set(compositions.map(comp => comp[field] || 'Unknown'))];
+}
+
+// Create a label for the dropdown filter
+function createFilterLabel(field) {
+  const label = document.createElement('label');
+  label.textContent = field.charAt(0).toUpperCase() + field.slice(1);
+  return label;
+}
+
+// Create the dropdown button
+function createDropdownButton() {
+  const dropdownButton = document.createElement('button');
+  dropdownButton.classList.add('dropdown-btn');
+  dropdownButton.textContent = '▼';
+  return dropdownButton;
+}
+
+// Create the dropdown content and checkboxes
+function createDropdownContent(field, fieldValues) {
+  const dropdownContent = document.createElement('div');
+  dropdownContent.classList.add('dropdown-content');
+
+  fieldValues.forEach(value => {
+    const checkboxWrapper = createCheckboxWrapper(field, value);
+    dropdownContent.appendChild(checkboxWrapper);
+  });
+
+  return dropdownContent;
+}
+
+// Create a checkbox wrapper for each dropdown value
+function createCheckboxWrapper(field, value) {
+  const checkboxWrapper = document.createElement('div');
+  const checkbox = createCheckbox(field, value);
+  const checkboxLabel = createCheckboxLabel(field, value);
+
+  checkboxWrapper.appendChild(checkbox);
+  checkboxWrapper.appendChild(checkboxLabel);
+
+  checkbox.addEventListener('change', () => {
+    updateSelectedFilters(field, value, checkbox.checked);
+    renderTree(getPriorities());
+  });
+
+  return checkboxWrapper;
+}
+
+// Create a checkbox element for each value
+function createCheckbox(field, value) {
+  const checkbox = document.createElement('input');
+  checkbox.type = 'checkbox';
+  checkbox.value = value;
+  checkbox.id = `${field}-${value}`;
+  checkbox.checked = selectedFilters[field] ? selectedFilters[field].includes(value) : true;
+  return checkbox;
+}
+
+// Create a checkbox label for each value
+function createCheckboxLabel(field, value) {
+  const checkboxLabel = document.createElement('label');
+  checkboxLabel.setAttribute('for', `${field}-${value}`);
+  checkboxLabel.textContent = value;
+  return checkboxLabel;
+}
+
+// Update selected filters when checkbox is toggled
 function updateSelectedFilters(field, value, isChecked) {
   if (isChecked) {
     if (!selectedFilters[field]) selectedFilters[field] = [];
@@ -122,13 +178,11 @@ function updateSelectedFilters(field, value, isChecked) {
   }
 }
 
-// Read the current tab order into an array of field names
+// Get the current tab order into an array of field names
 function getPriorities() {
   return Array.from(document.querySelectorAll('#priorityTabs li'))
     .map(li => li.dataset.field);
 }
-
-
 
 // Recursively build the tree using priority order
 function buildTree(arr, priorities, depth = 0) {
@@ -137,7 +191,7 @@ function buildTree(arr, priorities, depth = 0) {
   if (depth >= priorities.length) {
     arr.forEach(item => {
       const li = document.createElement('li');
-      li.textContent = item.name;  // Show the name at the end
+      li.textContent = item.name;
       ul.appendChild(li);
     });
     return ul;
@@ -148,43 +202,61 @@ function buildTree(arr, priorities, depth = 0) {
 
   groups.forEach(group => {
     if (!selectedFilters[field] || selectedFilters[field].includes(group)) {
-      const li = document.createElement('li');
-      const label = document.createElement('span');
-      label.textContent = group;
-      label.classList.add('caret');
-      li.appendChild(label);
-
-      const items = arr.filter(i => (i[field] || 'Unknown') === group);
-      if (items.length) {
-        const childUl = buildTree(items, priorities, depth + 1);
-        childUl.classList.add('nested');
-        li.appendChild(childUl);
-      }
-
-      ul.appendChild(li);
+      ul.appendChild(createGroupItem(arr, field, group, priorities, depth));
     }
   });
 
   return ul;
 }
 
+// Create a group item for the tree
+function createGroupItem(arr, field, group, priorities, depth) {
+  const li = document.createElement('li');
+  const label = createGroupLabel(group);
+  li.appendChild(label);
+
+  const items = arr.filter(i => (i[field] || 'Unknown') === group);
+  if (items.length) {
+    const childUl = buildTree(items, priorities, depth + 1);
+    childUl.classList.add('nested');
+    li.appendChild(childUl);
+  }
+
+  return li;
+}
+
+// Create a label for a group in the tree
+function createGroupLabel(group) {
+  const label = document.createElement('span');
+  label.textContent = group;
+  label.classList.add('caret');
+  return label;
+}
+
 // Render the tree with current priorities and filters
 function renderTree(priorities) {
-  compositions.sort((a, b) => {
-    for (let field of priorities) {
-      const va = (a[field] || '').toString();
-      const vb = (b[field] || '').toString();
-      if (va < vb) return -1;
-      if (va > vb) return 1;
-    }
-    return 0;
-  });
+  compositions.sort((a, b) => compareItems(a, b, priorities));
 
   const container = document.getElementById('musicTree');
   container.innerHTML = '';
   container.appendChild(buildTree(compositions, priorities));
 
-  // Add event listeners for the caret (expand/collapse)
+  addCaretEventListeners();
+}
+
+// Compare two items based on priorities
+function compareItems(a, b, priorities) {
+  for (let field of priorities) {
+    const va = (a[field] || '').toString();
+    const vb = (b[field] || '').toString();
+    if (va < vb) return -1;
+    if (va > vb) return 1;
+  }
+  return 0;
+}
+
+// Add event listeners for caret (expand/collapse)
+function addCaretEventListeners() {
   document.querySelectorAll('.caret').forEach(caret => {
     caret.addEventListener('click', () => {
       const nested = caret.parentElement.querySelector('.nested');
@@ -192,37 +264,33 @@ function renderTree(priorities) {
         nested.classList.toggle('active');
         caret.classList.toggle('caret-down');
       }
-
-      // Toggle the checkbox container when a genre is clicked
-      const checkboxContainer = caret.parentElement.querySelector('.checkbox-container');
-      if (checkboxContainer) {
-        checkboxContainer.classList.toggle('active');
-      }
     });
   });
 }
 
-// Function to expand all nested tree items recursively
+// Expand all nested tree items
 function expandAll() {
-  const caretIcons = document.querySelectorAll('.caret');
-  caretIcons.forEach(caret => {
-    if (!caret.classList.contains('caret-down')) { // If not expanded
-      caret.click(); // Simulate a click to expand the node
-    }
-  });
+  toggleCaretState(false);
 }
 
-// Function to collapse all nested tree items recursively
+// Collapse all nested tree items
 function collapseAll() {
+  toggleCaretState(true);
+}
+
+// Toggle caret state (expanded or collapsed)
+function toggleCaretState(collapse) {
   const caretIcons = document.querySelectorAll('.caret');
   caretIcons.forEach(caret => {
-    if (caret.classList.contains('caret-down')) { // If expanded
-      caret.click(); // Simulate a click to collapse the node
+    if (collapse && caret.classList.contains('caret-down')) {
+      caret.click();
+    } else if (!collapse && !caret.classList.contains('caret-down')) {
+      caret.click();
     }
   });
 }
 
-// Toggle between expand all and collapse all based on current state
+// Toggle between expand all and collapse all
 document.getElementById('expandCollapseAll').addEventListener('click', function () {
   const allExpanded = document.querySelectorAll('.caret-down').length === document.querySelectorAll('.caret').length;
   if (allExpanded) {
