@@ -12,19 +12,17 @@
 
   <h1>Classical Music Tree</h1>
 
-  <!-- Priority Tabs for sorting will be dynamically generated -->
-  <ul id="priorityTabs"></ul>
+  <div id="priorityControls">
+    <ul id="priorityTabs"></ul>
+    <div id="buttonControls">
+      <button id="applyTabs">Apply Priority</button>
+      <button id="expandCollapseAll">Expand All</button>
+    </div>
+  </div>
 
-  <button id="applyTabs">Apply Priority</button>
-  <button id="expandCollapseAll">Expand All</button>
 
-  <!-- Dropdown Filters Container for categories like Genre, Instrumentation -->
-  <div id="filterContainer"></div>
-
-  <!-- Music Tree will be rendered here -->
   <ul id="musicTree"></ul>
 
-  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
   <script src="js/tree.js" defer></script>
 

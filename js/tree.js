@@ -38,17 +38,42 @@ function initializeTabs() {
 function createTab(field) {
   const li = document.createElement('li');
   li.dataset.field = field;
+  li.style.position = 'relative';  // Keep the parent <li> element positioned relatively
 
   const handle = createHandle();
   const label = createLabel(field);
   const button = createExpandButton(field);
+  const dropdown = createTabDropdown(field);
 
   li.appendChild(handle);
   li.appendChild(label);
   li.appendChild(button);
+  li.appendChild(dropdown); // Ensure dropdown is in the DOM
+
+  // Double-click to toggle dropdown
+  li.addEventListener('click', (e) => { // change!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    e.stopPropagation();
+
+    const isVisible = dropdown.style.display === 'block';
+    dropdown.style.display = isVisible ? 'none' : 'block';
+
+    // Position the dropdown absolutely below the tab
+    const rect = li.getBoundingClientRect();
+    dropdown.style.position = 'absolute';  // Set dropdown to absolute positioning
+    dropdown.style.top = `${rect.bottom}px`; // Position it directly below the tab
+    dropdown.style.left = `0px`;  // Align it to the left of the tab
+
+    // Optional: update expand icon
+    const expandBtn = li.querySelector('.expand-btn');
+    if (expandBtn) {
+      expandBtn.textContent = isVisible ? '+' : '×';
+    }
+  });
 
   return li;
 }
+
+
 
 // Create draggable handle for a tab
 function createHandle() {
@@ -68,10 +93,83 @@ function createLabel(field) {
 // Create the expand button for each tab
 function createExpandButton(field) {
   const button = document.createElement('button');
-  button.textContent = "▼";
+  button.textContent = "+";
   button.classList.add('expand-btn');
-  button.addEventListener('click', () => console.log(`Expand dropdown for ${field}`));
+  console.log(`Created expand button for field: ${field}`);
+
+  button.addEventListener('click', (e) => {
+    e.stopPropagation();
+
+    // Get the parent <li> and the dropdown (if any)
+    const li = button.closest('li');
+    const dropdown = li.querySelector('.tab-dropdown');
+
+    // Log the button click and the state of the dropdown
+    console.log(`Toggled dropdown for field: ${field}, Current state: ${dropdown ? dropdown.style.display : 'no dropdown'}`);
+
+
+    console.log(`Dropdown state before toggle: ${dropdown ? dropdown.style.display : 'no dropdown'}`);
+
+
+    // If dropdown exists, toggle it
+    if (dropdown) {
+      dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+      button.textContent = dropdown.style.display === 'none' ? '+' : '×';
+    } else {
+      console.warn(`No dropdown found for ${field}`);  // If no dropdown found, warn in console
+    }
+
+    console.log(`Dropdown state after toggle: ${dropdown.style.display}`);
+  });
+
   return button;
+}
+
+
+// Create a dropdown for each tab
+function createTabDropdown(field) {
+  const dropdown = document.createElement('div');
+  dropdown.classList.add('tab-dropdown');
+  dropdown.style.position = 'absolute'; // Make it float
+  dropdown.style.display = 'none';
+
+  const fieldValues = getFieldValues(field);
+  // Select/Deselect All checkbox
+  const selectAllWrapper = document.createElement('div');
+  const selectAllCheckbox = document.createElement('input');
+  selectAllCheckbox.type = 'checkbox';
+  selectAllCheckbox.id = `select-all-${field}`;
+  selectAllCheckbox.checked = true;
+
+  const selectAllLabel = document.createElement('label');
+  selectAllLabel.setAttribute('for', `select-all-${field}`);
+  selectAllLabel.textContent = 'Select/Deselect All';
+
+  selectAllWrapper.appendChild(selectAllCheckbox);
+  selectAllWrapper.appendChild(selectAllLabel);
+  dropdown.appendChild(selectAllWrapper);
+
+  selectAllCheckbox.addEventListener('change', () => {
+    const checkboxes = dropdown.querySelectorAll(`input[type="checkbox"]:not(#select-all-${field})`);
+    selectedFilters[field] = [];
+
+    checkboxes.forEach(checkbox => {
+      checkbox.checked = selectAllCheckbox.checked;
+      if (selectAllCheckbox.checked) {
+        selectedFilters[field].push(checkbox.value);
+      }
+    });
+
+    renderTree(getPriorities());
+  });
+
+
+  fieldValues.forEach(value => {
+    const checkboxWrapper = createCheckboxWrapper(field, value);
+    dropdown.appendChild(checkboxWrapper);
+  });
+
+  return dropdown;
 }
 
 // Generate the dropdown filters dynamically
@@ -79,6 +177,7 @@ function generateDropdownFilters() {
   const fields = Object.keys(compositions[0]); // Get all fields dynamically
   fields.forEach(field => createFieldDropdown(field));
 }
+
 
 // Create a dropdown filter for each field
 function createFieldDropdown(field) {
@@ -152,11 +251,22 @@ function createCheckboxWrapper(field, value) {
 
 // Create a checkbox element for each value
 function createCheckbox(field, value) {
+  // Initialize selectedFilters[field] if undefined
+  if (!selectedFilters[field]) {
+    selectedFilters[field] = [];
+  }
+
+  // If the value hasn't been added yet, add it (select by default)
+  if (!selectedFilters[field].includes(value)) {
+    selectedFilters[field].push(value);
+  }
+
   const checkbox = document.createElement('input');
   checkbox.type = 'checkbox';
   checkbox.value = value;
   checkbox.id = `${field}-${value}`;
-  checkbox.checked = selectedFilters[field] ? selectedFilters[field].includes(value) : true;
+  checkbox.checked = true;
+
   return checkbox;
 }
 
@@ -170,13 +280,19 @@ function createCheckboxLabel(field, value) {
 
 // Update selected filters when checkbox is toggled
 function updateSelectedFilters(field, value, isChecked) {
+  if (!selectedFilters[field]) {
+    selectedFilters[field] = [];
+  }
+
   if (isChecked) {
-    if (!selectedFilters[field]) selectedFilters[field] = [];
-    selectedFilters[field].push(value);
+    if (!selectedFilters[field].includes(value)) {
+      selectedFilters[field].push(value);
+    }
   } else {
     selectedFilters[field] = selectedFilters[field].filter(v => v !== value);
   }
 }
+
 
 // Get the current tab order into an array of field names
 function getPriorities() {
@@ -290,6 +406,9 @@ function toggleCaretState(collapse) {
   });
 }
 
+document.addEventListener('click', () => console.log('A click occurred'));
+
+
 // Toggle between expand all and collapse all
 document.getElementById('expandCollapseAll').addEventListener('click', function () {
   const allExpanded = document.querySelectorAll('.caret-down').length === document.querySelectorAll('.caret').length;
@@ -300,4 +419,27 @@ document.getElementById('expandCollapseAll').addEventListener('click', function 
     expandAll();
     this.textContent = "Collapse All";
   }
-});
+}
+
+);
+
+
+
+
+
+// hahahahah
+
+// hahahahahahh
+
+// hahahahah
+
+// hahahahahahh
+
+// hahahahah
+
+// hahahahahahh
+
+
+// hahahahah
+
+// hahahahahahh
