@@ -51,7 +51,7 @@ function createTab(field) {
   li.appendChild(dropdown); // Ensure dropdown is in the DOM
 
   // Double-click to toggle dropdown
-  li.addEventListener('click', (e) => { // change!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  li.addEventListener('click', (e) => {
     e.stopPropagation();
 
     const isVisible = dropdown.style.display === 'block';
@@ -72,8 +72,6 @@ function createTab(field) {
 
   return li;
 }
-
-
 
 // Create draggable handle for a tab
 function createHandle() {
@@ -125,7 +123,6 @@ function createExpandButton(field) {
   return button;
 }
 
-
 // Create a dropdown for each tab
 function createTabDropdown(field) {
   const dropdown = document.createElement('div');
@@ -133,7 +130,7 @@ function createTabDropdown(field) {
   dropdown.style.position = 'absolute'; // Make it float
   dropdown.style.display = 'none';
 
-  const fieldValues = getFieldValues(field);
+  const fieldValues = getFieldValues(field).sort();
   // Select/Deselect All checkbox
   const selectAllWrapper = document.createElement('div');
   const selectAllCheckbox = document.createElement('input');
@@ -172,64 +169,9 @@ function createTabDropdown(field) {
   return dropdown;
 }
 
-// Generate the dropdown filters dynamically
-function generateDropdownFilters() {
-  const fields = Object.keys(compositions[0]); // Get all fields dynamically
-  fields.forEach(field => createFieldDropdown(field));
-}
-
-
-// Create a dropdown filter for each field
-function createFieldDropdown(field) {
-  const fieldValues = getFieldValues(field);
-
-  const fieldContainer = document.createElement('div');
-  fieldContainer.classList.add('filter-container');
-
-  const label = createFilterLabel(field);
-  const dropdownButton = createDropdownButton();
-  const dropdownContent = createDropdownContent(field, fieldValues);
-
-  fieldContainer.appendChild(label);
-  fieldContainer.appendChild(dropdownButton);
-  fieldContainer.appendChild(dropdownContent);
-
-  document.getElementById('filterContainer').appendChild(fieldContainer);
-
-  dropdownButton.addEventListener('click', () => dropdownContent.classList.toggle('show'));
-}
-
 // Get unique field values for dropdown
 function getFieldValues(field) {
   return [...new Set(compositions.map(comp => comp[field] || 'Unknown'))];
-}
-
-// Create a label for the dropdown filter
-function createFilterLabel(field) {
-  const label = document.createElement('label');
-  label.textContent = field.charAt(0).toUpperCase() + field.slice(1);
-  return label;
-}
-
-// Create the dropdown button
-function createDropdownButton() {
-  const dropdownButton = document.createElement('button');
-  dropdownButton.classList.add('dropdown-btn');
-  dropdownButton.textContent = '▼';
-  return dropdownButton;
-}
-
-// Create the dropdown content and checkboxes
-function createDropdownContent(field, fieldValues) {
-  const dropdownContent = document.createElement('div');
-  dropdownContent.classList.add('dropdown-content');
-
-  fieldValues.forEach(value => {
-    const checkboxWrapper = createCheckboxWrapper(field, value);
-    dropdownContent.appendChild(checkboxWrapper);
-  });
-
-  return dropdownContent;
 }
 
 // Create a checkbox wrapper for each dropdown value
@@ -422,24 +364,3 @@ document.getElementById('expandCollapseAll').addEventListener('click', function 
 }
 
 );
-
-
-
-
-
-// hahahahah
-
-// hahahahahahh
-
-// hahahahah
-
-// hahahahahahh
-
-// hahahahah
-
-// hahahahahahh
-
-
-// hahahahah
-
-// hahahahahahh
