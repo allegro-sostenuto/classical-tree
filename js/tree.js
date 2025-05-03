@@ -27,11 +27,9 @@ function initializeTabs() {
 
   Sortable.create(tabs, {
     animation: 150,
-    handle: '.handle'
+    handle: '.handle',
+    onEnd: () => renderTree(getPriorities())
   });
-
-  document.getElementById('applyTabs')
-    .addEventListener('click', () => renderTree(getPriorities()));
 }
 
 // Create a tab with draggable handle and expand button
