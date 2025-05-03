@@ -7,17 +7,19 @@ ul {
 #priorityTabs {
   display: flex;
   flex-direction: row;
-  gap: 20px;
+  gap: 12px;
   padding: 0;
   margin: 1em 0;
 }
 
 #priorityTabs li {
   display: flex;
+  position: relative;
   align-items: center;
-  padding: 6px 12px;
-  background-color: transparent;
-  border-radius: 0;
+  justify-content: center;
+  background-color: #fcfbfa;
+  padding: 6px 24px;
+  border-radius: 12px;
   font-size: 1rem;
   color: #333;
   cursor: pointer;
@@ -33,13 +35,10 @@ ul {
   background-color: #e0e0e6;
 }
 
-#priorityTabs li .handle {
-  margin-right: 8px;
-  padding: 0;
-  font-weight: bold;
-  color: #444;
-  cursor: grab;
-  user-select: none;
+#priorityTabs .handle {
+  position: absolute;
+  left: 8px;
+  margin-right: 0;
 }
 
 #priorityTabs li .handle:hover {
@@ -50,16 +49,30 @@ ul {
   color: #666;
 }
 
-#priorityTabs li .expand-btn {
-  margin-left: 8px;
-  background: none;
-  border: none;
-  font-size: 16px;
-  color: #666;
-  cursor: pointer;
-  pointer-events: none;
+#priorityTabs .caret {
+  position: absolute;
+  right: 0;
+  margin-left: 0;
 }
 
+/* Caret +/× transition styles */
+#priorityTabs .caret::before {
+  content: "\002B";
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+#priorityTabs .caret.caret-down::before {
+  transform: rotate(45deg);
+}
+
+.tab-label {
+  flex-grow: 1;
+  text-align: center;
+  padding: 0 20px;
+}
+
+/* Dropdown container styles */
 .dropdown-container {
   position: absolute;
   z-index: 10;
@@ -67,9 +80,8 @@ ul {
   min-width: 180px;
   padding: 8px;
   background-color: #fff;
-  border: none;
-  border-radius: 0;
-  box-shadow: none;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
 }
 
 .dropdown-container.active {
@@ -78,41 +90,58 @@ ul {
 
 .dropdown-container label {
   display: block;
-  margin: 6px 0;
+  margin: 4px 0;
   font-size: 14px;
   color: #333;
 }
 
 .dropdown-container input[type="checkbox"] {
-  margin-right: 8px;
+  margin-right: 6px;
 }
 
-#applyTabs,
-#expandCollapseAll {
-  margin-top: 1em;
-  padding: 0.4em 1.2em;
-  font-size: 1rem;
-  background-color: transparent;
-  color: #333;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
+/* Buttons */
+button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 24px;
+  border-radius: 12px;
+  background-color: #fcfbfa;
+  font-size: 0.75rem;
   font-family: serif;
+  color: #333;
+  cursor: pointer;
+  user-select: none;
+  font-weight: bold;
+  border: none;
+  transition: background-color 0.2s, color 0.2s;
 }
 
-#applyTabs:hover,
-#expandCollapseAll:hover {
-  background-color: #f5f5f7;
-  border-color: #ccc;
+button:hover {
+  background-color: #f0f0f5;
 }
 
+button:active {
+  background-color: #e0e0e6;
+}
+
+
+/* Music tree and tree controls */
 #musicTree {
+  position: relative;
   border-top: 1px solid #ddd;
   padding-top: 1em;
   margin-top: 1em;
 }
 
+.tree-control {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 100;
+}
+
+/* Tree caret and nested styles */
 .caret {
   cursor: pointer;
   user-select: none;
@@ -134,7 +163,7 @@ ul {
 }
 
 .caret:hover {
-  color: #0077cc;
+  color: #007ACC;
 }
 
 .nested {
@@ -152,80 +181,7 @@ ul {
   font-size: 0.95rem;
 }
 
-.caret:hover {
-  color: #007ACC;
-}
-
-#priorityTabs li .expand-btn {
-  margin-left: 8px;
-  background: none;
-  border: none;
-  font-size: 16px;
-  cursor: pointer;
-  color: #555;
-  padding: 0;
-}
-
-#priorityTabs li .expand-btn:hover {
-  color: #555;
-}
-
-.dropdown-container {
-  position: absolute;
-  background-color: #fff;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-  border-radius: 4px;
-  padding: 8px;
-  display: none;
-  z-index: 10;
-}
-
-.dropdown-container label {
-  display: block;
-  margin: 4px 0;
-  font-size: 14px;
-}
-
-.dropdown-container input[type="checkbox"] {
-  margin-right: 6px;
-}
-
-.dropdown-container.active {
-  display: block;
-}
-
-#expandCollapseAll {
-  margin-top: 1em;
-  padding: 0.4em 1.2em;
-  font-size: 1rem;
-  background-color: transparent;
-  color: #333;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  cursor: pointer;
-  font-family: serif;
-}
-
-#expandCollapseAll:hover {
-  background-color: #f5f5f7;
-  border-color: #ccc;
-}
-
-#applyTabs {
-  padding: 0.4em 1.2em;
-  background-color: transparent;
-  color: #333;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  cursor: pointer;
-  font-family: serif;
-}
-
-#applyTabs:hover {
-  background-color: #f5f5f7;
-  border-color: #ccc;
-}
-
+/* Optional dropdown under tab */
 .tab-dropdown {
   position: absolute;
   top: 100%;

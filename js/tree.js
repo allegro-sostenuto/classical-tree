@@ -36,35 +36,44 @@ function initializeTabs() {
 function createTab(field) {
   const li = document.createElement('li');
   li.dataset.field = field;
-  li.style.position = 'relative';  // Keep the parent <li> element positioned relatively
+  li.style.position = 'relative';
 
   const handle = createHandle();
-  const label = createLabel(field);
-  const button = createExpandButton(field);
+  const { label, caret } = createLabel(field);
   const dropdown = createTabDropdown(field);
 
   li.appendChild(handle);
   li.appendChild(label);
-  li.appendChild(button);
-  li.appendChild(dropdown); // Ensure dropdown is in the DOM
+  li.appendChild(caret); // Add caret as separate element
+  li.appendChild(dropdown);
 
   // Double-click to toggle dropdown
   li.addEventListener('click', (e) => {
+    // Ignore handle drag interactions
+    if (e.target.closest('.handle')) return;
+
     e.stopPropagation();
 
+    // Toggle dropdown visibility
+    const caret = li.querySelector('.caret');
     const isVisible = dropdown.style.display === 'block';
     dropdown.style.display = isVisible ? 'none' : 'block';
+    caret.classList.toggle('caret-down', !isVisible);
+    if (!isVisible) {
+      const viewportHeight = window.innerHeight;
+      const liRect = li.getBoundingClientRect();
 
-    // Position the dropdown absolutely below the tab
-    const rect = li.getBoundingClientRect();
-    dropdown.style.position = 'absolute';  // Set dropdown to absolute positioning
-    dropdown.style.top = `${rect.bottom}px`; // Position it directly below the tab
-    dropdown.style.left = `0px`;  // Align it to the left of the tab
+      // Update expand button text
+      const expandBtn = li.querySelector('.expand-btn');
+      if (expandBtn) {
+        expandBtn.textContent = isVisible ? '+' : '×';
+      }
 
-    // Optional: update expand icon
-    const expandBtn = li.querySelector('.expand-btn');
-    if (expandBtn) {
-      expandBtn.textContent = isVisible ? '+' : '×';
+      // Positioning logic (from previous changes)
+      if (dropdown.style.display === 'block') {
+        const viewportHeight = window.innerHeight;
+        const liRect = li.getBoundingClientRect();
+      }
     }
   });
 
@@ -82,8 +91,15 @@ function createHandle() {
 // Create the label for each field
 function createLabel(field) {
   const label = document.createElement('span');
+  label.className = 'tab-label'; // Add class for styling
   label.textContent = field.charAt(0).toUpperCase() + field.slice(1);
-  return label;
+
+  // Create caret separately
+  const caret = document.createElement('span');
+  caret.className = 'caret';
+
+  // Add caret to li, not to the label
+  return { label, caret };
 }
 
 // Create the expand button for each tab
@@ -92,32 +108,6 @@ function createExpandButton(field) {
   button.textContent = "+";
   button.classList.add('expand-btn');
   console.log(`Created expand button for field: ${field}`);
-
-  button.addEventListener('click', (e) => {
-    e.stopPropagation();
-
-    // Get the parent <li> and the dropdown (if any)
-    const li = button.closest('li');
-    const dropdown = li.querySelector('.tab-dropdown');
-
-    // Log the button click and the state of the dropdown
-    console.log(`Toggled dropdown for field: ${field}, Current state: ${dropdown ? dropdown.style.display : 'no dropdown'}`);
-
-
-    console.log(`Dropdown state before toggle: ${dropdown ? dropdown.style.display : 'no dropdown'}`);
-
-
-    // If dropdown exists, toggle it
-    if (dropdown) {
-      dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
-      button.textContent = dropdown.style.display === 'none' ? '+' : '×';
-    } else {
-      console.warn(`No dropdown found for ${field}`);  // If no dropdown found, warn in console
-    }
-
-    console.log(`Dropdown state after toggle: ${dropdown.style.display}`);
-  });
-
   return button;
 }
 
@@ -294,8 +284,32 @@ function renderTree(priorities) {
   compositions.sort((a, b) => compareItems(a, b, priorities));
 
   const container = document.getElementById('musicTree');
-  container.innerHTML = '';
+  container.innerHTML = ''; // Clear previous content
+
+  // Create and add expand/collapse control
+  const toggleBtn = document.createElement('button');
+  toggleBtn.textContent = "Expand All";
+  toggleBtn.classList.add('tree-control');
+  container.appendChild(toggleBtn);
+
+  // Add main tree content
   container.appendChild(buildTree(compositions, priorities));
+
+  // Update click handler for the new button
+  // In the renderTree function's toggle button event handler:
+  toggleBtn.addEventListener('click', function () {
+    // Only check carets within the tree
+    const allExpanded = document.querySelectorAll('#musicTree .caret-down').length ===
+      document.querySelectorAll('#musicTree .caret').length;
+
+    if (allExpanded) {
+      collapseAll();
+      this.textContent = "Expand All";
+    } else {
+      expandAll();
+      this.textContent = "Collapse All";
+    }
+  });
 
   addCaretEventListeners();
 }
@@ -313,7 +327,8 @@ function compareItems(a, b, priorities) {
 
 // Add event listeners for caret (expand/collapse)
 function addCaretEventListeners() {
-  document.querySelectorAll('.caret').forEach(caret => {
+  // Only target carets within the tree
+  document.querySelectorAll('#musicTree .caret').forEach(caret => {
     caret.addEventListener('click', () => {
       const nested = caret.parentElement.querySelector('.nested');
       if (nested) {
@@ -336,7 +351,8 @@ function collapseAll() {
 
 // Toggle caret state (expanded or collapsed)
 function toggleCaretState(collapse) {
-  const caretIcons = document.querySelectorAll('.caret');
+  // Only target carets within the tree
+  const caretIcons = document.querySelectorAll('#musicTree .caret');
   caretIcons.forEach(caret => {
     if (collapse && caret.classList.contains('caret-down')) {
       caret.click();
@@ -347,18 +363,3 @@ function toggleCaretState(collapse) {
 }
 
 document.addEventListener('click', () => console.log('A click occurred'));
-
-
-// Toggle between expand all and collapse all
-document.getElementById('expandCollapseAll').addEventListener('click', function () {
-  const allExpanded = document.querySelectorAll('.caret-down').length === document.querySelectorAll('.caret').length;
-  if (allExpanded) {
-    collapseAll();
-    this.textContent = "Expand All";
-  } else {
-    expandAll();
-    this.textContent = "Collapse All";
-  }
-}
-
-);
